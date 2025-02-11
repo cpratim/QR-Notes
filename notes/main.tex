@@ -1,0 +1,494 @@
+% --- LaTeX Lecture Notes Template - S. Venkatraman ---
+
+% --- Set document class and font size ---
+
+\documentclass[letterpaper, 11pt]{article}
+
+% --- Package imports ---
+
+% Extended set of colors
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{
+  amsmath, amsthm, amssymb, mathtools, dsfont, units,          % Math typesetting
+  graphicx, wrapfig, subfig, float,                            % Figures and graphics formatting
+  listings, color, inconsolata, pythonhighlight,               % Code formatting
+  fancyhdr, sectsty, hyperref, enumerate, enumitem, framed}    % Headers/footers, section fonts, links, lists
+
+\usepackage{minted}
+% lipsum is just for generating placeholder text and can be removed
+\usepackage{hyperref, lipsum} 
+
+% --- Fonts ---
+
+\usepackage{newpxtext, newpxmath, inconsolata}
+
+% --- Page layout settings ---
+
+% Set page margins
+\usepackage[left=.75in, right=.75in, top=.75in, bottom=.75in, headsep=.2in, footskip=0.35in]{geometry}
+
+% Anchor footnotes to the bottom of the page
+\usepackage[bottom]{footmisc}
+
+% Set line spacing
+\renewcommand{\baselinestretch}{1.2}
+
+% Set spacing between paragraphs
+\setlength{\parskip}{1.3mm}
+
+% Allow multi-line equations to break onto the next page
+\allowdisplaybreaks
+
+% --- Page formatting settings ---
+
+% Set image captions to be italicized
+\usepackage[font={it,footnotesize}]{caption}
+
+% Set link colors for labeled items (blue), citations (red), URLs (orange)
+\hypersetup{colorlinks=true, linkcolor=RoyalBlue, citecolor=RedOrange, urlcolor=ForestGreen}
+
+% Set font size for section titles (\large) and subtitles (\normalsize) 
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{{\fontsize{19}{19}\selectfont\textreferencemark}\;\; }{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries\selectfont}{\thesubsection\;\;\;}{0em}{}
+
+% Enumerated/bulleted lists: make numbers/bullets flush left
+%\setlist[enumerate]{wide=2pt, leftmargin=16pt, labelwidth=0pt}
+\setlist[itemize]{wide=0pt, leftmargin=16pt, labelwidth=10pt, align=left}
+
+% --- Table of contents settings ---
+
+\usepackage[subfigure]{tocloft}
+
+% Reduce spacing between sections in table of contents
+\setlength{\cftbeforesecskip}{.9ex}
+
+% Remove indentation for sections
+\cftsetindents{section}{0em}{0em}
+
+% Set font size (\large) for table of contents title
+\renewcommand{\cfttoctitlefont}{\large\bfseries}
+
+% Remove numbers/bullets from section titles in table of contents
+\makeatletter
+\renewcommand{\cftsecpresnum}{\begin{lrbox}{\@tempboxa}}
+\renewcommand{\cftsecaftersnum}{\end{lrbox}}
+\makeatother
+
+% --- Set path for images ---
+
+\graphicspath{{Images/}{../Images/}}
+
+% --- Math/Statistics commands ---
+
+% Add a reference number to a single line of a multi-line equation
+% Usage: "\numberthis\label{labelNameHere}" in an align or gather environment
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+% Shortcut for bold text in math mode, e.g. $\b{X}$
+\let\b\mathbf
+
+% Shortcut for bold Greek letters, e.g. $\bg{\beta}$
+\let\bg\boldsymbol
+
+% Shortcut for calligraphic script, e.g. %\mc{M}$
+\let\mc\mathcal
+
+% \mathscr{(letter here)} is sometimes used to denote vector spaces
+\usepackage[mathscr]{euscript}
+
+% Convergence: right arrow with optional text on top
+% E.g. $\converge[p]$ for converges in probability
+\newcommand{\converge}[1][]{\xrightarrow{#1}}
+
+% Weak convergence: harpoon symbol with optional text on top
+% E.g. $\wconverge[n\to\infty]$
+\newcommand{\wconverge}[1][]{\stackrel{#1}{\rightharpoonup}}
+
+% Equality: equals sign with optional text on top
+% E.g. $X \equals[d] Y$ for equality in distribution
+\newcommand{\equals}[1][]{\stackrel{\smash{#1}}{=}}
+
+% Normal distribution: arguments are the mean and variance
+% E.g. $\normal{\mu}{\sigma}$
+\newcommand{\normal}[2]{\mathcal{N}\left(#1,#2\right)}
+
+% Uniform distribution: arguments are the left and right endpoints
+% E.g. $\unif{0}{1}$
+\newcommand{\unif}[2]{\text{Uniform}(#1,#2)}
+
+% Independent and identically distributed random variables
+% E.g. $ X_1,...,X_n \iid \normal{0}{1}$
+\newcommand{\iid}{\stackrel{\smash{\text{iid}}}{\sim}}
+
+% Sequences (this shortcut is mostly to reduce finger strain for small hands)
+% E.g. to write $\{A_n\}_{n\geq 1}$, do $\bk{A_n}{n\geq 1}$
+\newcommand{\bk}[2]{\{#1\}_{#2}}
+
+% Math mode symbols for common sets and spaces. Example usage: $\R$
+\newcommand{\R}{\mathbb{R}}	% Real numbers
+\newcommand{\C}{\mathbb{C}}	% Complex numbers
+\newcommand{\Q}{\mathbb{Q}}	% Rational numbers
+\newcommand{\Z}{\mathbb{Z}}	% Integers
+\newcommand{\N}{\mathbb{N}}	% Natural numbers
+\newcommand{\F}{\mathcal{F}}	% Calligraphic F for a sigma algebra
+\newcommand{\El}{\mathcal{L}}	% Calligraphic L, e.g. for L^p spaces
+
+% Math mode symbols for probability
+\newcommand{\pr}{\mathbb{P}}	% Probability measure
+\newcommand{\E}{\mathbb{E}}	% Expectation, e.g. $\E(X)$
+\newcommand{\var}{\text{Var}}	% Variance, e.g. $\var(X)$
+\newcommand{\cov}{\text{Cov}}	% Covariance, e.g. $\cov(X,Y)$
+\newcommand{\corr}{\text{Corr}}	% Correlation, e.g. $\corr(X,Y)$
+\newcommand{\B}{\mathcal{B}}	% Borel sigma-algebra
+
+% Other miscellaneous symbols
+\newcommand{\tth}{\text{th}}	% Non-italicized 'th', e.g. $n^\tth$
+\newcommand{\Oh}{\mathcal{O}}	% Big-O notation, e.g. $\O(n)$
+\newcommand{\1}{\mathds{1}}	% Indicator function, e.g. $\1_A$
+
+% Additional commands for math mode
+\DeclareMathOperator*{\argmax}{argmax}		% Argmax, e.g. $\argmax_{x\in[0,1]} f(x)$
+\DeclareMathOperator*{\argmin}{argmin}		% Argmin, e.g. $\argmin_{x\in[0,1]} f(x)$
+\DeclareMathOperator*{\spann}{Span}		% Span, e.g. $\spann\{X_1,...,X_n\}$
+\DeclareMathOperator*{\bias}{Bias}		% Bias, e.g. $\bias(\hat\theta)$
+\DeclareMathOperator*{\ran}{ran}			% Range of an operator, e.g. $\ran(T) 
+\DeclareMathOperator*{\dv}{d\!}			% Non-italicized 'with respect to', e.g. $\int f(x) \dv x$
+\DeclareMathOperator*{\diag}{diag}		% Diagonal of a matrix, e.g. $\diag(M)$
+\DeclareMathOperator*{\trace}{trace}		% Trace of a matrix, e.g. $\trace(M)$
+\DeclareMathOperator*{\supp}{supp}		% Support of a function, e.g., $\supp(f)$
+
+% Numbered theorem, lemma, etc. settings - e.g., a definition, lemma, and theorem appearing in that 
+% order in Lecture 2 will be numbered Definition 2.1, Lemma 2.2, Theorem 2.3. 
+% Example usage: \begin{theorem}[Name of theorem] Theorem statement \end{theorem}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+% Un-numbered theorem, lemma, etc. settings
+% Example usage: \begin{lemma*}[Name of lemma] Lemma statement \end{lemma*}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem*{definition*}{Definition}
+\newtheorem*{example*}{Example}
+\newtheorem*{remark*}{Remark}
+\newtheorem*{claim}{Claim}
+
+% --- Left/right header text (to appear on every page) ---
+
+% Do not include a line under header or above footer
+\pagestyle{fancy}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+
+% Right header text: Lecture number and title
+\renewcommand{\sectionmark}[1]{\markright{#1} }
+\fancyhead[R]{\small\textit{\nouppercase{\rightmark}}}
+
+% Left header text: Short course title, hyperlinked to table of contents
+\fancyhead[L]{\hyperref[sec:contents]{\small Quantitative Research Notes}}
+
+% --- Document starts here ---
+
+\begin{document}
+
+% --- Main title and subtitle ---
+
+\title{Quantitative Research Notes \\[1em]
+\normalsize A short complation of knowledge }
+
+% --- Author and date of last update ---
+\author{\normalsize Pratim Chowdhary}
+\date{\normalsize\vspace{-1ex} Last updated: \today}
+
+% --- Add title and table of contents ---
+
+\maketitle
+\tableofcontents\label{sec:contents}
+
+% --- Main content: import lectures as subfiles ---
+
+\section{Introduction}
+
+This is a short compilation of notes on various topics in quantitative research. The notes are based on various sources and are intended to be a quick reference guide for students 
+as well as for myself to brush up on concepts.
+
+\section{Decision Theory}
+\subsection{Framework}
+\begin{enumerate}
+    \item A \textbf{statistical model} is a framily of distributions, formally defined as:
+    \begin{align}
+        \mc{P} = \{P_{\theta} : \theta \in \Theta\}
+    \end{align}
+    where $\Theta$ is the parameter space and $P_{\theta}$ is the distribution of the data given $\theta$. The parameter space $\Theta$ is the set of all possible values of $\theta$.
+    \item A \textbf{decision procedure} is a function $\delta : \mc{X} \to \Theta$ that maps the data space $\mc{X}$ to the parameter space $\Theta$.
+    For example if we take the example of a weighted coin flips, we have:
+    \begin{align}
+        \mc{X} = \{0,1\}^n \quad \text{and} \quad \Theta = [0,1]
+    \end{align}
+    If we are interested in estimating the parameter $\theta$ of the coin, we can define a decision 
+    space as $\Theta = [0,1]$ and a decision procedure as,
+    \begin{align}
+        \delta(x) = \frac{1}{n} \sum_{i=1}^{n} x_i
+    \end{align}
+    where $x \in \mc{X}$ is the data and $\delta(x)$ is the estimate of the parameter $\theta$. 
+    \item A \textbf{loss function} is a function $L : \Theta \times \Theta \to \R$ that measures the loss incurred by choosing $\theta$ when the true parameter is $\theta'$.
+    For example in many situtations we use the squared loss function:
+    \begin{align}
+        L(\theta, \theta') = (\theta - \theta')^2
+    \end{align}
+    \item The \textbf{risk} of a decision procedure $\delta$ is the expected loss incurred by the decision procedure:
+    \begin{align}
+        R(\theta, \delta) = \E_{\theta}[L(\theta, \delta(X))]
+    \end{align}
+    where $\E_{\theta}$ denotes the expectation with respect to the distribution $P_{\theta}$.
+\end{enumerate}
+
+\subsection{Data Reduction}
+The idea is that not all data is relevant for making decisions. We can hence 
+reduce the data to a smaller set of and not lose any information. 
+\begin{enumerate}
+    \item A \textbf{statistic} is a function $T : \mc{X} \to \mc{T}$ that maps the data space $\mc{X}$ to a smaller space $\mc{T}$.
+    \item A statistic $T$ is \textbf{sufficient} for a parameter $\theta$ if the distribution of the data given the statistic $T$ does not depend on $\theta$. 
+    Formally if for all $t$, 
+    \begin{align}
+        P_{\theta}(X | T = t) = P_{\theta'}(X | T = t) \quad \forall \theta, \theta'
+    \end{align}
+    \item For any matrix $X \in \R^{n \times p}$, $X^T X$ must be at least positive semi-definite, this is because:
+    \begin{align}
+        v^T X^T X v = (Xv)^T Xv = ||Xv||^2 \geq 0
+    \end{align}
+    where $v \in \R^p$.
+
+\end{enumerate}
+
+\section{Linear Algebra}
+
+\section{Eigenvalues and Eigenvectors}
+\begin{enumerate}
+    \item The eigenvalues of a matrix $A \in \R^{n \times n}$ are the roots of the characteristic polynomial:
+    \begin{align}
+        \text{det}(A - \lambda I) = 0
+    \end{align}
+    where $\lambda$ is the eigenvalue and $I$ is the identity matrix. The eigenvectors are the vectors $v$ such that:
+    \begin{align}
+        A v = \lambda v
+    \end{align}
+    \item The trace of a matrix is the sum of its eigenvalues and the determinant is the product of its eigenvalues.
+    \item The eigenvectors of a matrix are orthogonal if the matrix is symmetric.
+    \item The eigenvectors of a matrix are linearly independent if the matrix is diagonalizable.
+\end{enumerate}
+
+\section{(Semi) Positive Definite Matrices}
+\begin{enumerate}
+    \item A matrix $A \in \R^{n \times n}$ is \textbf{positive semi-definite} if for all $x \in \R^n$:
+    \begin{align}
+        x^T A x \geq 0 
+    \end{align}
+    Positive definite matrices are defined similarly with the inequality replaced by a strict inequality.
+    \item If a matrix is positive semi-definite, then all its eigenvalues are non-negative and if it is positive definite, then all its eigenvalues are positive.
+
+\end{enumerate}
+
+\subsection{Covariance Matrix}
+\begin{enumerate}
+    \item The covariance matrix of a random vector $X \in \R^n$ is defined as:
+    \begin{align}
+        \Sigma = \E[(X - \mu)(X - \mu)^T]
+    \end{align}
+    where $\mu = \E[X]$ is the mean of the random vector $X$. The covariance matrix is a symmetric positive semi-definite matrix. 
+    With a real set of data $X \in \R^{n \times p}$, the empircal covariance matrix is defined as:
+    \begin{align}
+        \hat{\Sigma} = \frac{1}{n - 1} X^T X \in R^{p \times p}
+    \end{align}
+    where $X$ is the data matrix with $n$ samples and $p$ features.
+    \item Note the covariance matrix can only be full rank if $N \ge p$ and none of the features 
+    are linearly dependent, this is because:
+    \begin{align}
+        \text{rank}(\Sigma) \le \min(n,p)
+    \end{align}
+    and since $n \ge p$, the rank of the covariance matrix is at most $p$. Some of the 
+    useful properties of the covariance matrix are:
+    \begin{itemize}
+        \item The covariance matrix is symmetric and positive semi-definite.
+        \item The covariance matrix is diagonal $\iff$ the features are uncorrelated.
+        \item It is related to the correlation matrix by:
+        \begin{align}
+            \text{Corr}(X) = D^{-1} \Sigma D^{-1} \quad \text{where} \quad D = \text{diag}(\Sigma)^{1/2}
+        \end{align}
+        \item The covariance matrix is positive definite $\iff$ the features are linearly independent.
+    \end{itemize}    
+\end{enumerate}
+
+\section{Idempotent Matrices}
+\begin{enumerate}
+    \item A matrix $A \in \R^{n \times n}$ is idempotent if $A^2 = A$. The following are some properties of idempotent matrices:
+    \begin{itemize}
+        
+        \item The eigenvalues of an idempotent matrix are either 0 or 1, this can be seen by:
+        \begin{align}
+            A v = \lambda v \implies A^2 v = \lambda^2 v \implies \lambda^2 v = \lambda v \implies \lambda = 0,1
+        \end{align}
+        \item The rank of an idempotent matrix is equal to its trace this is 
+        because: since the trace is 
+        the sum of the eigenvalues, the rank is the number of non-zero eigenvalues.
+        \item The eigenvectors of an idempotent matrix are orthogonal. 
+        \item The matrix $I - A$ is also idempotent.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Pseudo Inverse}
+
+\section{Optimization}
+
+
+\section{Probability and Statistics}
+Most of the topics of basic probability and statistics are too well known 
+
+
+% --- Bibliography ---
+
+% Start a bibliography with one item.
+% Citation example: "\cite{williams}".
+
+\section{Trading (Game Theory)}
+
+\section{Practical Statistical Learning}
+
+\section{Pandas}
+\subsection{DataFrames}
+\begin{enumerate}
+    \item A DataFrame is a 2-dimensional labeled data structure with columns of potentially different types, some common operations on DataFrames are:
+    \begin{itemize}
+        \item \textbf{Selecting columns:} Columns can be selected using the column name as an attribute or as a key.
+        \item \textbf{Selecting rows:} Rows can be selected using the \texttt{loc} and \texttt{iloc} methods.
+        \item \textbf{Filtering rows:} Rows can be filtered using boolean indexing.
+        \item \textbf{Applying functions:} Functions can be applied to columns using the \texttt{apply} method.
+        \item \textbf{Grouping data:} Data can be grouped using the \texttt{groupby} method.
+        \item \textbf{Merging data:} Data can be merged using the \texttt{merge} method.
+    \end{itemize}
+    Some examples of these operations are:
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        import pandas as pd
+        # Create a sample DataFrame
+        data = {
+            'name':   ['Alice', 'Bob', 'Charlie', 'Dave', 'Eve'],
+            'age':    [24, 42, 18, 68, 32],
+            'city':   ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'],
+            'salary': [50000, 60000, 45000, 70000, 65000]
+        }
+        df = pd.DataFrame(data)
+        # 1. Selecting columns
+        # Using the column name as a key
+        names = df['name']
+        # Using the column name as an attribute (if it doesn't conflict with method names)
+        ages = df.age
+        # 2. Selecting rows
+        # Using label-based indexing (loc)
+        first_row_loc = df.loc[0]      # Select row with label 0
+        subset_loc = df.loc[1:3]       # Select rows with labels 1 through 3
+        # Using integer-based indexing (iloc)
+        first_row_iloc = df.iloc[0]    # Select the first row
+        subset_iloc = df.iloc[1:3]     # Select the 2nd and 3rd rows
+        # 3. Filtering rows (boolean indexing)
+        older_than_30 = df[df['age'] > 30]
+        # 4. Applying functions
+        # Apply a lambda function to increase salary by 10%
+        df['salary_with_bonus'] = df['salary'].apply(lambda x: x * 1.1)
+        # 5. Grouping data
+        # Calculate the mean salary for each city
+        mean_salary_by_city = df.groupby('city')['salary'].mean()
+        # 6. Merging data
+        # Suppose we have another DataFrame df2 that shares a common key 'name'
+        df2 = pd.DataFrame({
+            'name':   ['Alice', 'Bob', 'Eve'],
+            'bonus':  [5000, 7000, 4000]
+        })
+        merged_df = pd.merge(df, df2, on='name', how='left')
+    \end{minted}
+\end{enumerate}
+
+\subsection{Summary Statistics}
+\begin{enumerate}
+    \item Some common summary statistics for a DataFrame \texttt{df} are:
+    \begin{itemize}
+        \item \textbf{Descriptive statistics:} The \texttt{describe} method provides summary statistics for numerical columns.
+        \item \textbf{Correlation matrix:} The \texttt{corr} method provides the correlation matrix for numerical columns.
+        \item \textbf{Unique values:} The \texttt{nunique} method provides the number of unique values for each column.
+        \item \textbf{Value counts:} The \texttt{value\_counts} method provides the frequency of each unique value in a column.
+        \item \textbf{Missing values:} The \texttt{isnull} method provides a DataFrame of missing values.
+    \end{itemize}
+    Some examples of these operations are:
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        # 1. Descriptive statistics
+        summary_stats = df.describe()
+        # 2. Correlation matrix
+        correlation_matrix = df.corr()
+        # 3. Unique values
+        unique_values = df.nunique()
+        # 4. Value counts
+        value_counts = df['city'].value_counts()
+        # 5. Missing values
+        missing_values = df.isnull()
+    \end{minted}
+\end{enumerate}
+
+\subsection{Data Cleaning}
+\begin{enumerate}
+    \item A lot of the time data is not clean and therefore needs preprocessing before it can be used for analysis. Some of the basic 
+    operations for data cleaning are:
+    \begin{itemize}
+        \item \textbf{Removing duplicates:} Duplicates can be removed using the \texttt{drop\_duplicates} method.
+        \item \textbf{Filling missing values:} Missing values can be filled using the \texttt{fillna} method.
+        \item \textbf{Replacing values:} Values can be replaced using the \texttt{replace} method.
+        \item \textbf{Changing data types:} Data types can be changed using the \texttt{astype} method.
+    \end{itemize}
+    Some examples of these operations are:
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        # 1. Removing duplicates
+        df_no_duplicates = df.drop_duplicates()
+        # 2. Filling missing values as 0
+        df_filled = df.fillna(0)
+        # 3. Replacing values
+        df_replaced = df.replace('New York', 'NY')
+        # 4. Changing data types
+        df['age'] = df['age'].astype(float)
+    \end{minted}
+    \item For data given in a categorical form, it is often useful to convert it to a numerical form. This can be done using the \texttt{get\_dummies} method.
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        # Convert the 'city' column to dummy variables
+        df_with_dummies = pd.get_dummies(df, columns=['city'])
+    \end{minted}
+    This will create a new column for each unique value in the 'city' column with a 1 if the value is present and a 0 otherwise (one-hot encoding).
+    
+\end{enumerate}
+
+
+\begin{thebibliography}{1}
+
+\bibitem{williams}
+   Williams, David.
+   \textit{Probability with Martingales}.
+   Cambridge University Press, 1991.
+   Print.
+
+% Uncomment the following lines to include a webpage
+% \bibitem{webpage1}
+%   LastName, FirstName. ``Webpage Title''.
+%   WebsiteName, OrganizationName.
+%   Online; accessed Month Date, Year.\\
+%   \texttt{www.URLhere.com}
+
+\end{thebibliography}
+
+% --- Document ends here ---
+
+\end{document}
