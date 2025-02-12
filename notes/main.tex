@@ -272,7 +272,7 @@ reduce the data to a smaller set of and not lose any information.
 
 \section{Linear Algebra}
 
-\section{Eigenvalues and Eigenvectors}
+\subsection{Eigenvalues and Eigenvectors}
 \begin{enumerate}
     \item The eigenvalues of a matrix $A \in \R^{n \times n}$ are the roots of the characteristic polynomial:
     \begin{align}
@@ -287,7 +287,7 @@ reduce the data to a smaller set of and not lose any information.
     \item The eigenvectors of a matrix are linearly independent if the matrix is diagonalizable.
 \end{enumerate}
 
-\section{(Semi) Positive Definite Matrices}
+\subsection{(Semi) Positive Definite Matrices}
 \begin{enumerate}
     \item A matrix $A \in \R^{n \times n}$ is \textbf{positive semi-definite} if for all $x \in \R^n$:
     \begin{align}
@@ -328,7 +328,7 @@ reduce the data to a smaller set of and not lose any information.
     \end{itemize}    
 \end{enumerate}
 
-\section{Idempotent Matrices}
+\subsection{Idempotent Matrices}
 \begin{enumerate}
     \item A matrix $A \in \R^{n \times n}$ is idempotent if $A^2 = A$. The following are some properties of idempotent matrices:
     \begin{itemize}
@@ -345,21 +345,117 @@ reduce the data to a smaller set of and not lose any information.
     \end{itemize}
 \end{enumerate}
 
+\subsection{QR Decomposition}
+\begin{enumerate}
+    \item The \textbf{QR decomposition} of a matrix $A \in \R^{n \times p}$ is a decomposition of the form:
+    \begin{align}
+        A = Q R \quad \text{where} \quad Q^T Q = I \quad \text{and} \quad R = \begin{bmatrix} r_{ij} \end{bmatrix}
+    \end{align}
+    where $Q$ is an orthogonal matrix and $R$ is an upper triangular matrix. 
+    \begin{align}
+        Q = \begin{bmatrix} q_1 & q_2 & \cdots & q_p \end{bmatrix} \quad \text{and} \quad R = \begin{bmatrix} r_{ij} \end{bmatrix}
+    \end{align}
+    each $q_i$ in $Q$ is an orthogonal vector with $||q_i|| = 1$ and $r_{ij} = 0$ for $i > j$.
+    \item The \textbf{Gram-Schmidt} process is a method for computing the QR decomposition of a matrix. The process is as follows:
+    \begin{enumerate}
+        \item Let $a_1, a_2, \cdots, a_p$ be the columns of the matrix $A$.
+        \item Set $q_1 = a_1 / ||a_1||$.
+        \item For $i = 2,3,\cdots,p$, set:
+        \begin{align}
+            q_i = a_i - \sum_{j=1}^{i-1}\text{proj}_{q_j}(a_i) = a_i - \sum_{j=1}^{i-1} \frac{a_i^T q_j}{q_j^T q_j} q_j \rightarrow q_i = \frac{q_i}{||q_i||}
+        \end{align}
+        the intuition for this is that we are projecting the vector $a_i$ onto the subspace spanned by $q_1, q_2, \cdots, q_{i-1}$ and then subtracting that projection from $a_i$. \\ \\
+        Here the $R$ matrix is given by:
+        \begin{align}
+            R_{ij} = q_i^T a_j
+        \end{align}
+        as we can get back the original matrix $A$ by:
+        \begin{align}
+            A = [a_1, a_2, \cdots, a_p] = [q_1, q_2, \cdots, q_p] \begin{bmatrix} q_1^T a_1 & q_1^T a_2 & \cdots & q_1^T a_p \\ 0 & q_2^T a_2 & \cdots & q_2^T a_p \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & q_p^T a_p \end{bmatrix}
+        \end{align}
+        as $a_i = \sum_{j=1}^{p} q_j R_{ij}$. Intuitively this is true because each $a_i$ is a linear combination of the $q_i$ vectors, specifically
+        the linear component is how much of $a_i$ is in the direction of $q_i$ (the projection).
+    \end{enumerate}
+    \item \textbf{Linear Least Squares}: QR decomposition can help aid in solving the linear least squares problem 
+    especially in cases of high collinearity, as:
+    \begin{align}
+        \text{cond}(X^T X) = \text{cond}(X)^2 \implies (X^T X)^{-1} \quad \text{is ill-conditioned}
+    \end{align} 
+    Reframing linear least squares with the QR decomposition, we have:
+    \begin{align}
+        X^T X \hat{\beta} = X^T y \implies R^T Q^T Q R \hat{\beta} = R^T Q^T y \implies R \hat{\beta} = Q^T y
+    \end{align}
+    Here since $R$ is upper triangular, we can solve for $\hat{\beta}$ by back substitution, 
+    creating a more numerically stable solution with easier computation.
+     
+\end{enumerate}
+
 \subsection{Pseudo Inverse}
 
 \section{Optimization}
 
-
-\section{Probability and Statistics}
-Most of the topics of basic probability and statistics are too well known 
-
+\section{Statistics}
+\subsection{Hypthothesis Testing}
+\begin{enumerate}
+    \item 
+\end{enumerate}
 
 % --- Bibliography ---
 
 % Start a bibliography with one item.
 % Citation example: "\cite{williams}".
 
+\section{Linear Regression}
+\subsection{Ordinary Least Squares}
+\begin{enumerate}
+    \item 
+\end{enumerate}
+
 \section{Trading (Game Theory)}
+\subsection{Making Markets}
+\begin{enumerate}
+    \item When \textbf{making a market} the most important thing to consider is the fair value of whatever
+    it is you are trying to price. For example that could be the expectation of a sum of random variables,
+    \begin{align}
+        \E[X_1 + X_2 + \cdots + X_n] \quad \text{where} \quad X_i \sim \text{Coin Flip}(p)
+    \end{align}
+    in this case we would be trading on the sum of $n$ coin flips with probability of heads $p$.
+    \item The \textbf{bid-ask spread} is the difference between the price at which you 
+    are willing to buy and the price at which you are willing to sell. 
+    \begin{itemize}
+        \item In general for less liquid assets you would want to have a larger spread,
+        as the risk of holding the asset is higher.
+        \item For higher variance assets you would also want to have a larger spread as the 
+        probability that the asset will move against you is higher. For example if we are trading,
+        \begin{align}
+            X_1 + X_2 + \cdots + X_n \quad \text{where} \quad X_i \sim \text{Normal}(0,1)
+        \end{align}
+        the variance of the sum is $n$, while in the following case:
+        \begin{align}
+            X_1 + X_2 + \cdots + X_n \quad \text{where} \quad X_i \sim \text{Normal}(0,0.1)
+        \end{align}
+        the variance of the sum is $0.1n$, hence the spread should be larger in the first case, even though 
+        the expected value of the sum is the same.
+
+    \end{itemize}
+    \item \textbf{Impact Function}: When someone trades (typically a large order), on your market 
+    it makes sense to adjust your theoretical price, for example if you had a market on $X$,
+    \begin{align}
+        \text{Bid} \quad  [100] \quad 95.0 \quad - \quad 105.0 \quad [100] \quad \text{Ask} 
+    \end{align}
+    and someone buys $100$ shares at $105$, you would want to think to yourself, "
+    \textit{why did they buy at $105$?}".
+    \begin{itemize}
+        \item The buyer could have information that moves the fair value up, and they wanted 
+        to profit off of that. 
+        \item The buyer could just be willing to pay the spread to get the shares quickly to hold for longer
+        \item The buyer could be uninformed and just buying because they think the price will go up.
+    \end{itemize}
+    In the first case (espcially if you think the buyer is informed), you would want to adjust your 
+    theoretical price up so that you don't get crushed by future informed traders. \\ \\
+    In the other cases you might not want to adjust your price as much, as the buyer might not have
+    any information that you don't have and you would be losing money by adjusting your price.
+\end{enumerate}
 
 \section{Practical Statistical Learning}
 
@@ -462,15 +558,78 @@ Most of the topics of basic probability and statistics are too well known
         # 4. Changing data types
         df['age'] = df['age'].astype(float)
     \end{minted}
-    \item For data given in a categorical form, it is often useful to convert it to a numerical form. This can be done using the \texttt{get\_dummies} method.
+    \item \textbf{One-Hot Encoding}: for data given in a categorical form, it is often useful to convert it to a numerical form. This can be done using the \texttt{get\_dummies} method.
     \begin{minted}[fontsize=\small, frame=single]{python}
         # Convert the 'city' column to dummy variables
         df_with_dummies = pd.get_dummies(df, columns=['city'])
     \end{minted}
-    This will create a new column for each unique value in the 'city' column with a 1 if the value is present and a 0 otherwise (one-hot encoding).
+    This will create a new column for each unique value in the 'city' column with a 1 if the value is present and a 0 otherwise.
+    \item \textbf{Clipping}: Sometimes it is useful to clip the values of a column to a certain range. This can be done using the \texttt{clip} method.
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        # Clip the 'age' column to be between 18 and 65
+        df_clipped = df['age'].clip(18, 65)
+    \end{minted}
+
+\end{enumerate}
+
+\subsection{Time Series}
+\begin{enumerate}
+    \item Time series data is data that is indexed by time. Some common operations on time series data are:
+    \begin{itemize}
+        \item \textbf{Resampling:} Time series data can be resampled using the \texttt{resample} method.
+        \item \textbf{Shifting:} Time series data can be shifted using the \texttt{shift} method.
+        \item \textbf{Rolling windows:} Rolling windows can be applied to time series data using the \texttt{rolling} method.
+    \end{itemize}
+    Some examples of these operations are:
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        # 1. Resampling
+        # Resample the data to monthly frequency
+        df_resampled = df.resample('M').mean()
+        # 2. Shifting
+        # Shift the data by 1 period (move the data down by 1)
+        df_shifted = df.shift(1)
+        # 3. Rolling windows
+        # Calculate the 7-day rolling mean
+        df_rolling = df.rolling(window=7).mean()
+    \end{minted}
     
 \end{enumerate}
 
+\section{NumPy}
+\subsection{Arrays}
+\begin{enumerate}
+    \item NumPy arrays are the core data structure for numerical computations in Python. Some common operations on NumPy arrays are:
+    \begin{itemize}
+        \item \textbf{Creating arrays:} Arrays can be created using the \texttt{array} function or using convenience functions like \texttt{zeros}, \texttt{ones}, and \texttt{arange}.
+        \item \textbf{Indexing:} Elements of an array can be accessed using square brackets.
+        \item \textbf{Slicing:} Subarrays can be accessed using slicing.
+        \item \textbf{Reshaping:} Arrays can be reshaped using the \texttt{reshape} method.
+        \item \textbf{Stacking:} Arrays can be stacked vertically or horizontally using the \texttt{vstack} and \texttt{hstack} functions.
+        \item \textbf{Broadcasting:} Operations can be performed on arrays of different shapes using broadcasting.
+    \end{itemize}
+    Some examples of these operations are:
+    \begin{minted}[fontsize=\small, frame=single]{python}
+        import numpy as np
+        # 1. Creating arrays
+        a = np.array([1, 2, 3])
+        b = np.zeros((2, 3))
+        c = np.ones((3, 2))
+        d = np.arange(10)
+        # 2. Indexing
+        first_element = a[0]
+        # 3. Slicing
+        first_two_elements = a[:2]
+        # 4. Reshaping
+        e = d.reshape((2, 5))
+        # 5. Stacking
+        f = np.vstack((b, c))
+        g = np.hstack((b, c))
+        # 6. Broadcasting
+        h = a + 1
+    \end{minted}
+\end{enumerate}
+
+\section{Scikit-Learn}
 
 \begin{thebibliography}{1}
 
