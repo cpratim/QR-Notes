@@ -340,9 +340,12 @@ reduce the data to a smaller set of and not lose any information.
         \item The rank of an idempotent matrix is equal to its trace this is 
         because: since the trace is 
         the sum of the eigenvalues, the rank is the number of non-zero eigenvalues.
-        \item The eigenvectors of an idempotent matrix are orthogonal. 
-        \item The matrix $I - A$ is also idempotent.
+        \item The matrix $I - A$ is also idempotent, we can see this by:
+        \begin{align}
+            (I - A)^2 = I^2 - 2 A + A^2 = I - A
+        \end{align}
     \end{itemize}
+    \item Any \textbf{projection matrix} is idempotent, this is because the projection matrix projects a vector onto a subspace and then projects it again onto the same subspace.
 \end{enumerate}
 
 \subsection{QR Decomposition}
@@ -390,9 +393,76 @@ reduce the data to a smaller set of and not lose any information.
      
 \end{enumerate}
 
+\subsection{Spectral Theorem}
+\begin{enumerate}
+    \item The \textbf{spectral theorem} states that any symmetric matrix $A \in \R^{n \times n}$ can be decomposed into the form:
+    \begin{align}
+        A = Q \Lambda Q^T
+    \end{align}
+    Where $Q$ is an orthogonal matrix of eigenvectors and $\Lambda$ is a diagonal matrix of eigenvalues.
+
+    \item We first show that if a matrix is symmetric all of its eigenvalues are real. We can show this by considering the eigenvalue equation:
+    \begin{align}
+        A x = \lambda x \implies x^T A x = x^T \lambda x \implies \lambda = \frac{x^T A x}{x^T x}
+    \end{align}
+    and since $A$ is symmetric we have that $A = A^T$ and hence:
+    \begin{align}
+        \lambda = \frac{x^T A x}{x^T x} = \frac{x^T A^T x}{x^T x} = \frac{x^T A x}{x^T x} = \lambda
+    \end{align}
+    and hence $\lambda$ is real.
+
+    \item We must also show that the eigenvectors are orthogonal. We show this by considering any two eigenvectors $x$ and $y$ of $A$:
+    \begin{align}
+        A x = \lambda x \quad \text{and} \quad A y = \mu y
+    \end{align}
+    then we have:
+    \begin{align}
+        x^T A y = \lambda x^T y \quad \text{and} \quad y^T A x = \mu y^T x
+    \end{align}
+    and since $A$ is symmetric we have that,
+    \begin{align}
+        x^T A y = y^T A x \implies \lambda x^T y = \mu y^T x \implies (\lambda - \mu) x^T y = 0
+    \end{align}
+    and since $x^T y \neq 0$ we have that $\lambda = \mu$.
+    \item We can show that $A = Q \Lambda Q^T$ by considering the spectral decomposition of $A$:
+    \begin{align}
+        Q = \begin{bmatrix} q_1 & q_2 & \cdots & q_n \end{bmatrix} \quad \text{and} \quad \Lambda = \text{diag}(\lambda_1, \lambda_2, \cdots, \lambda_n)
+    \end{align}
+    We then have that:
+    \begin{align}
+        A q_i = \lambda_i q_i \implies A Q = Q \Lambda
+    \end{align} 
+    therefore we have that,
+    \begin{align}
+        Q \Lambda Q^T = (A) Q Q^T = A
+    \end{align}
+
+
+\end{enumerate}
+
+\subsection{Eigen Decomposition}
+\begin{enumerate}
+    \item The \textbf{eigen decomposition} of a matrix $A \in \R^{n \times n}$ is a decomposition of the form:
+    \begin{align}
+        A = Q \Lambda Q^{-1}
+    \end{align}
+    where $Q$ is the matrix of eigenvectors and $\Lambda$ is the diagonal matrix of eigenvalues.
+    \item Any symmetric matrix is diagonalizable, this is because the eigenvectors of a symmetric matrix are orthogonal.
+\end{enumerate}
+
 \subsection{Pseudo Inverse}
 
 \section{Optimization}
+
+\section{Probability}
+\subsection{Multivariate Normal Distribution}
+\begin{enumerate}
+    \item A random vector $X \in \R^n$ is said to follow a \textbf{multivariate normal distribution} if it has a joint probability density function of the form:
+    \begin{align}
+        f(x) = \frac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} \exp\left(-\frac{1}{2} (x - \mu)^T \Sigma^{-1} (x - \mu)\right)
+    \end{align}
+    where $\mu \in \R^n$ is the mean vector and $\Sigma \in \R^{n \times n}$ is the covariance matrix. The covariance matrix $\Sigma$ must be symmetric and positive semi-definite.
+\end{enumerate}
 
 \section{Statistics}
 \subsection{Hypthothesis Testing}
@@ -436,6 +506,10 @@ reduce the data to a smaller set of and not lose any information.
         \hat{\theta} = g(X_1, X_2, \cdots, X_n) \quad \text{where} \quad X_1, X_2, \cdots, X_n \sim F_{\theta}
     \end{align}
     where $F$ is some distribution that depends on the parameter $\theta$.
+    \item The \textbf{bias} of an estimator is the difference between the expected value of the estimator and the true value of the parameter being estimated.
+    \begin{align}
+        \text{Bias}(\hat{\theta}) = \E[\hat{\theta}] - \theta
+    \end{align}
     \item An estimator is \textbf{unbiased} if its expected value is equal to the true value of the parameter being estimated, for 
     example if we have,
     \begin{align}
@@ -445,7 +519,40 @@ reduce the data to a smaller set of and not lose any information.
     \begin{align}
         \hat{\theta} \converge[p] \theta \quad \text{as} \quad n \to \infty
     \end{align}
+    \item The \textbf{mean squared error} (MSE) of an estimator is the expected value of the squared difference between the estimator and the true value of the parameter being estimated.
+    This can be decomposed into the variance of the estimator and the square of the bias:
+    \begin{align}
+        \text{MSE}(\hat{\theta}) = \E[(\hat{\theta} - \theta)^2] = \text{Var}(\hat{\theta}) + \text{Bias}(\hat{\theta})^2
+    \end{align}
+    \begin{itemize}
+        \item \textbf{Variance} is a measure of how much the estimates for the parameter vary as the sample data changes, 
+        for example the error caused by sampling variability.
+        \item \textbf{Bias} is a measure of how much the estimates for the parameter differ from the true value of the parameter,
+        for example the error caused by using an incorrect or overly simplified model.
+    \end{itemize}
+    \item \textbf{Maximum Likelihood Estimation}: The maximum likelihood estimator (MLE) is an estimator that maximizes the likelihood function of the observed data, 
+    formally:
+    \begin{align}
+        \hat{\theta}_{\text{MLE}} = \argmax_{\theta} \prod_{i=1}^{n} f_{\theta}(X_i)
+    \end{align}
+    where $f_{\theta}$ is the probability density function of the data. The MLE is consistent and asymptotically normal.
+    \item \textbf{Maximum A Posteriori Estimation}: The maximum a posteriori estimator (MAP) is an estimator that maximizes the posterior distribution of the parameter given the observed data
+    and a prior distribution, formally:
+    \begin{align}
+        \hat{\theta}_{\text{MAP}} = \argmax_{\theta} f(\theta | X) = \argmax_{\theta} f(X | \theta) \pi(\theta)
+    \end{align}
+    where $f(\theta | X)$ is the posterior distribution, $f(X | \theta)$ is the likelihood function, and $\pi(\theta)$ is the prior distribution. The MAP estimator is consistent and asymptotically normal.
 
+\end{enumerate}
+
+\section{Information Theory}
+\subsection{Entropy}
+\begin{enumerate}
+    \item The \textbf{entropy} of a random variable $X$ is a measure of the uncertainty in the random variable, formally defined as:
+    \begin{align}
+        H(X) = -\sum_{x} p(x) \log p(x)
+    \end{align}
+    where $p(x)$ is the probability mass function of the random variable. The entropy is maximized when all outcomes are equally likely (uniform distribution)
 \end{enumerate}
 
 % --- Bibliography ---
@@ -594,8 +701,8 @@ reduce the data to a smaller set of and not lose any information.
         \text{posterior}(\beta) \propto \exp\left(-\frac{1}{2\sigma^2} ||y - X \beta||^2 - \frac{1}{2\lambda} ||\beta||^2\right)
     \end{align}
     and maximizing the posterior is equivalent to minimizing the ridge regression loss.
-
 \end{enumerate}
+\subsection{Lasso Regression}
 
 \section{Trading (Game Theory)}
 \subsection{Making Markets}
