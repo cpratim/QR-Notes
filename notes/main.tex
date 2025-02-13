@@ -397,7 +397,55 @@ reduce the data to a smaller set of and not lose any information.
 \section{Statistics}
 \subsection{Hypthothesis Testing}
 \begin{enumerate}
-    \item 
+    \item A \textbf{hypothesis test} is a statistical test that is used to determine whether there is enough evidence in a sample of data to infer that a certain condition is true for the entire population.
+    It usually consists of 
+    \begin{itemize}
+        \item A null hypothesis $H_0$ that represents a default position that there is no effect or no difference.
+        \item A test statistic that is used to determine whether the null hypothesis should be rejected.
+        \item A significance level $\alpha$ that determines the probability of rejecting the null hypothesis when it is true.
+    \end{itemize}
+    \item The \textbf{p-value} is the probability of observing a test statistic as extreme as the one computed from the sample data, assuming that the null hypothesis is true. If the p-value is less than the significance level $\alpha$, then the null hypothesis is rejected.
+\end{enumerate}
+\section{T-Tests}
+\begin{enumerate}
+    \item A \textbf{t-test} is a statistical test used to determine if there is a significant difference between the means of two groups. There are different types of t-tests:
+    \begin{itemize}
+        \item A \textbf{one-sample t-test} is used to compare the mean of a single sample to a known mean.
+        \begin{align}
+            t = \frac{\bar{x} - \mu}{s / \sqrt{n}} \sim t_{n-1}
+        \end{align}
+        where $\bar{x}$ is the sample mean, $\mu$ is the known mean, $s$ is the sample standard deviation, and $n$ is the sample size.
+        \item A \textbf{two-sample t-test} is used to compare the means of two independent samples.
+        \begin{align}
+            t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{s_1^2 / n_1 + s_2^2 / n_2}} \sim t_{n_1 + n_2 - 2}
+        \end{align}
+        where $\bar{x}_1$ and $\bar{x}_2$ are the sample means, $s_1$ and $s_2$ are the sample standard deviations, and $n_1$ and $n_2$ are the sample sizes.
+        \item A \textbf{paired t-test} is used to compare the means of two related samples.
+        \begin{align}
+            t = \frac{\bar{d}}{s_d / \sqrt{n}} \sim t_{n-1}
+        \end{align}
+        where $\bar{d}$ is the mean of the differences between the paired samples, $s_d$ is the standard deviation of the differences, and $n$ is the number of pairs.
+    \end{itemize}
+    after obtaining the t-statistic, the p-value can be computed using the t-distribution and then 
+    a decision can be made based on the p-value.
+\end{enumerate}
+\section{Estimators}
+\begin{enumerate}
+    \item An \textbf{estimator} is a rule or method for estimating the value of an unknown parameter based on observed data. An estimator is a random variable since it depends on the data.
+    \begin{align}
+        \hat{\theta} = g(X_1, X_2, \cdots, X_n) \quad \text{where} \quad X_1, X_2, \cdots, X_n \sim F_{\theta}
+    \end{align}
+    where $F$ is some distribution that depends on the parameter $\theta$.
+    \item An estimator is \textbf{unbiased} if its expected value is equal to the true value of the parameter being estimated, for 
+    example if we have,
+    \begin{align}
+        X_i \sim \text{Normal}(\theta, 1) \quad \text{then} \quad \hat{\theta} = \frac{1}{n} \sum_{i=1}^{n} X_i \quad \text{is unbiased since} \quad \E[\hat{\theta}] = \theta
+    \end{align}
+    \item An estimator is \textbf{consistent} if it converges in probability to the true value of the parameter being estimated as the sample size increases,
+    \begin{align}
+        \hat{\theta} \converge[p] \theta \quad \text{as} \quad n \to \infty
+    \end{align}
+
 \end{enumerate}
 
 % --- Bibliography ---
@@ -406,9 +454,147 @@ reduce the data to a smaller set of and not lose any information.
 % Citation example: "\cite{williams}".
 
 \section{Linear Regression}
+\subsection{Assumptions}
+\begin{enumerate}
+    \item There are 5 key assumptions that are made in linear regression:
+    \begin{itemize}
+        \item \textbf{Linearity:} The relationship between the dependent and independent variables is linear.
+        \item \textbf{Independence:} The residuals are independent of each other,
+        \begin{align}
+            \text{Cov}(\epsilon_i, \epsilon_j) \approx 0 \quad \forall i \neq j
+        \end{align}
+        \item \textbf{Homoscedasticity:} The residuals have constant variance (i.e the variance is not a function of the independent variables).
+        \item \textbf{Normality:} The residuals are normally distributed,
+        \begin{align}
+            \epsilon_i \sim \normal{0}{\sigma^2} \quad \text{where} \quad \epsilon_i = y_i - \hat{y}_i
+        \end{align}
+        \item \textbf{No Multicollinearity:} The independent variables are not highly correlated with each other,
+        \begin{align}
+            \text{Corr}(X_i, X_j) \approx 0 \quad \forall i \neq j
+        \end{align}
+        This condition when violated can lead to unstable estimates of the coefficients due to 
+        the matrix $X^T X$ being ill-conditioned (high condition number).
+    \end{itemize}
+\end{enumerate}
 \subsection{Ordinary Least Squares}
 \begin{enumerate}
-    \item 
+    \item \textbf{Problem:} Given a set of data points $\{(x_i, y_i)\}_{i=1}^{n}$, represented by a matrix $X \in \R^{n \times p}$ and a vector $y \in \R^n$, we want to find 
+    a linear function $f(x) = x^T \beta$ that minimizes the sum of squared errors:
+    \begin{align}
+        \argmin_{\beta} ||y - X \beta||^2
+    \end{align}
+    Note that $X$ is usually augmented with a column of ones to account for the intercept term.
+    \item \textbf{Solution:} We can derive the solution to the ordinary least squares problem by setting the gradient of the loss function to zero:
+    \begin{align}
+        ||y - X \beta||^2 = (X\beta - y)^T(X\beta - y) = \beta^T X^T X \beta - 2 \beta^T X^T y + y^T y \\
+        \nabla_{\beta} ||y - X \beta||^2 = 2 X^T X \beta - 2 X^T y = 0 \implies \hat{\beta} = (X^T X)^{-1} X^T y
+    \end{align}
+    where $\hat{\beta}$ is the least squares estimate of the coefficients.
+    \item By the \textbf{Gauss-Markov theorem}, the least squares estimate is the best linear unbiased estimator (BLUE) of the coefficients.
+    \item The \textbf{residuals} are the differences between the observed values and the predicted values:
+    \begin{align}
+        \hat{y} = X \hat{\beta} \quad \text{and} \quad \hat{e}  = y - \hat{y}
+    \end{align}
+    It can be shown that the residuals are orthogonal to the column space of $X$ (the feature space):
+    \begin{align}
+        \hat{e} = y - X \hat{\beta} = y - X (X^T X)^{-1} X^T y &\implies X^T \hat{e} = X^T y - X^T X (X^T X)^{-1} X^T y \\
+        X^T X (X^T X)^{-1} = I &\implies X^T \hat{e} = X^T y - X^T y = 0
+    \end{align}
+    This is also intuitive as the residuals are the component of $y$ that is orthogonal to the column space of $X$ (as $\hat{y}$ 
+    is the projection of $y$ onto the column space of $X$). \\ \\ 
+    It can also be shown that the sum of the residuals is zero:
+    \begin{align}
+        X^T \hat{e} = 0 \quad \text{and} \quad X^T = [\hat{1} \; |\; X] \implies \hat{1}^T \hat{e} = 0
+    \end{align}
+    where $\hat{1}$ is the vector of ones that is used to fit the intercept term.
+    \item The \textbf{residual sum of squares} (RSS) is the sum of the squared residuals:
+    \begin{align}
+        \text{RSS} = ||y - X \hat{\beta}||^2 = \hat{e}^T \hat{e}
+    \end{align}
+    And the \textbf{total sum of squares} (TSS) is the sum of the squared differences between the observed values and the mean of the observed values:
+    \begin{align}
+        \text{TSS} = ||y - \bar{y} \hat{1}||^2 = (y - \bar{y} \hat{1})^T (y - \bar{y} \hat{1})
+    \end{align}
+    where $\bar{y}$ is the mean of the observed values. 
+    \item The \textbf{coefficient of determination} $R^2$ is the proportion of the variance in the dependent variable that is predictable from the independent variables:
+    \begin{align}
+        R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} = 1 - \frac{\hat{e}^T \hat{e}}{(y - \bar{y} \hat{1})^T (y - \bar{y} \hat{1})}
+    \end{align}
+    the $R^2$ value can range from $-\infty$ to $1$ and is a measure of how well the model fits the data, or 
+    how much of the variance in the dependent variable is explained by the independent variables.
+    \item The least squares estimator for $\beta$ is a \textbf{maximum likelihood estimator} under the assumption that the residuals are normally distributed,
+    \begin{align}
+        \epsilon_i = y_i - x_i^T \beta \sim \normal{0}{\sigma^2} \quad \text{where} \quad \text{PDF}(\epsilon_i) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{1}{2\sigma^2} \epsilon_i^2\right)
+    \end{align}
+    therefore we have that:
+    \begin{align}
+        \text{likelihood}(\beta) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{1}{2\sigma^2} (y_i - x_i^T \beta)^2\right)
+    \end{align}
+    we maximize by considering the log-likelihood:
+    \begin{align}
+        \ell(\beta) = -\frac{n}{2} \log(2\pi \sigma^2) - \frac{1}{2\sigma^2} \sum_{i=1}^{n} (y_i - x_i^T \beta)^2 \propto \min_{\beta} ||y - X \beta||^2
+    \end{align}
+    which is clearly proportional to minimizing the least squares loss. 
+\end{enumerate}
+\subsection{Regularization}
+\begin{enumerate}
+    \item When $X \in \R^{n \times p}$ is not full rank, the matrix $X^T X$ is not invertible and the least squares estimate $\hat{\beta} = (X^T X)^{-1} X^T y$ does not exist.
+    this can be seen by the fact that,
+    \begin{align}
+        \text{rank}(X^T X) \le \min(n,p) \quad \text{and} \quad \text{rank}(X) \le \min(n,p) \quad \text{with} \quad p < n
+    \end{align}
+    hence the matrix $X^T X$ is not full rank. \\ \\
+    Another way $X^T X$ isn't invertible is when $n < p$, in this case the system 
+    is underdetermined and there are infinitely many solutions to the least squares problem.
+    \item In both of these cases, we can use \textbf{regularization} to stabilize the estimates of the coefficients.
+\end{enumerate}
+\subsection{Ridge Regression}
+\begin{enumerate}
+    \item \textbf{Ridge regression} adds a penalty term proportional to the $L_2$ norm of the coefficients to the least squares loss function:
+    \begin{align}
+        \argmin_{\beta} ||y - X \beta||^2 + \lambda ||\beta||_2^2
+    \end{align}
+    where $\lambda$ is the regularization parameter that controls the strength of the penalty term.
+    \item \textbf{Solution:} We can derive the solution to ridge:
+    \begin{align}
+        ||y - X \beta||^2 + \lambda ||\beta||_2^2 = (X\beta - y)^T(X\beta - y) + \lambda \beta^T \beta \\
+        \nabla_{\beta} ||y - X \beta||^2 + \lambda ||\beta||_2^2 = 2 X^T X \beta - 2 X^T y + 2 \lambda \beta = 0 \\
+        \implies \hat{\beta} = (X^T X + \lambda I)^{-1} X^T y
+    \end{align}
+    where $I$ is the identity matrix. 
+    \item \textbf{Rank Analysis:} We can see that if $X^TX$ is not full rank, then matrix $X^TX + \lambda I$ must be full rank. 
+    We can see this by considering the eigenvalues of $X^TX$ and $X^TX + \lambda I$:
+    \begin{align}
+        \alpha \in \text{eig}(X^TX) \implies X^TX v = \alpha v
+    \end{align}
+    Consider the eigenvalues of $X^TX + \lambda I$:
+    \begin{align}
+        (X^TX + \lambda I) v = X^TX v + \lambda v = \alpha v + \lambda v = (\alpha + \lambda) v 
+    \end{align}
+    hence if we have a set of eigenvalues $\alpha$ for $X^TX$, we will have a set of eigenvalues $\alpha + \lambda$ for $X^TX + \lambda I$, 
+    and since $X^TX$ is a positive semi-definite matrix, the eigenvalues of $X^TX + \lambda I$ will be strictly positive.
+    Therefore we have that,
+    \begin{align}
+        \det(X^TX) = \prod_{i=1}^{p} \alpha_i \quad \text{and} \quad \det(X^TX + \lambda I) = \prod_{i=1}^{p} (\alpha_i + \lambda)
+    \end{align}
+    and since the determinant of a matrix is the product of its eigenvalues, we have that the matrix $X^TX + \lambda I$ is full rank. \\ \\ 
+    Note that the matrix can still be ill-conditioned if the eigenvalues of $X^TX$ are close to zero, as the eigenvalues of $X^TX + \lambda I$ will be close to $\lambda$, 
+    and if $\lambda$ is small then the condition number of the matrix will remain large.
+    \item The ridge regression estimate is a \textbf{maximum a posteriori (MAP)} estimate under the 
+    assumption that the coefficients are normally distributed with mean zero and variance proportional to $1 / \lambda$:
+    \begin{align}
+        \beta_i \sim \normal{0}{\lambda} \implies \text{PDF}(\beta_i) = \frac{1}{\sqrt{2\pi \lambda}} \exp\left(-\frac{1}{2\lambda} \beta_i^2\right)
+    \end{align}
+    using Bayes' theorem, we have that:
+    \begin{align}
+        \text{likelihood}(\beta) \propto \exp\left(-\frac{1}{2\sigma^2} ||y - X \beta||^2\right) \quad \text{and} \quad \text{prior}(\beta) \propto \exp\left(-\frac{1}{2\lambda} ||\beta||^2\right)
+    \end{align}
+    therefore we can take the product of the likelihood and the prior to get the posterior:
+    \begin{align}
+        \text{posterior}(\beta) \propto \exp\left(-\frac{1}{2\sigma^2} ||y - X \beta||^2 - \frac{1}{2\lambda} ||\beta||^2\right)
+    \end{align}
+    and maximizing the posterior is equivalent to minimizing the ridge regression loss.
+
 \end{enumerate}
 
 \section{Trading (Game Theory)}
