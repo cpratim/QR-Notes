@@ -16,6 +16,8 @@
   fancyhdr, sectsty, hyperref, enumerate, enumitem, framed}    % Headers/footers, section fonts, links, lists
 
 \usepackage{minted}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} % 'noend' removes 'end' statements for compactness
 % lipsum is just for generating placeholder text and can be removed
 \usepackage{hyperref, lipsum} 
 
@@ -545,6 +547,24 @@ reduce the data to a smaller set of and not lose any information.
 
 \end{enumerate}
 
+\section{Bootstrap}
+\subsection{Inspiration}
+\begin{enumerate}
+    \item The inspiration for the bootstrap comes from the idea of \textbf{resampling} the data 
+    that can be used to estimate the distribution of certain statistics.
+    \item Consider a sample $X_1, X_2, \cdots, X_n$ from some distribution $F$. We can use the bootstrap to estimate the distribution of the mean of the sample.
+    \begin{itemize}
+        \item We repeat the following process $B$ times:
+        \begin{itemize}
+            \item Draw a bootstrap sample of size $n$ from the original sample (with replacement).
+            \item Compute the statistic of interest on the bootstrap sample to generate an empirical distribution of the statistic.
+        \end{itemize}
+    \end{itemize}
+    \item The bootstrap is a non-parametric method, meaning that it does not make any assumptions about the distribution of the data.
+    
+
+\end{enumerate}
+
 \section{Information Theory}
 \subsection{Entropy}
 \begin{enumerate}
@@ -751,6 +771,64 @@ reduce the data to a smaller set of and not lose any information.
 \end{enumerate}
 
 \section{Practical Statistical Learning}
+\subsection{Cross Validation}
+\begin{enumerate}
+    \item \textbf{Cross Validation} is a technique used to estimate the performance of a model on an independent dataset.
+    \item The basic idea is to split the data into a training set and a validation set, and then use the training set to fit the model. Formally,
+    \begin{align}
+        \text{Data} \rightarrow \text{[Train Set | Validation Set | Test Set]} 
+    \end{align}
+    \item The most common type of cross validation is \textbf{k-fold cross validation}, where 
+    \begin{algorithm}
+        \caption{K-Fold Cross-Validation}
+        \begin{algorithmic}[1] % Line numbers
+        \State \textbf{Input:} Dataset \( D \), number of folds \( k \), model \( M \), hyperparameters \( p \), performance metric \( \text{Score} \)
+        \State \textbf{Output:} Average performance score \( S_{\text{avg}} \)
+        \State Shuffle \( D \) randomly and partition into \( k \) equal-sized folds \( \{F_1, F_2, \dots, F_k\} \) \Comment{Adjust if \( |D| \) not divisible by \( k \)}
+        \State Initialize scores list \( S \gets [] \)
+        \For{\( i = 1 \) to \( k \)} \Comment{Iterate over each fold}
+            \State Define test set \( D_{\text{test}} \gets F_i \)
+            \State Define training set \( D_{\text{train}} \gets D \setminus F_i \) \Comment{Union of all other folds}
+            \State Train model \( M \) on \( D_{\text{train}} \) using hyperparameters \( p \)
+            \State Evaluate \( M \) on \( D_{\text{test}} \) to compute \( s_i = \text{Score}(M, D_{\text{test}}) \)
+            \State Append \( s_i \) to \( S \)
+        \EndFor
+        \State Compute \( S_{\text{avg}} \gets \frac{1}{k} \sum_{i=1}^{k} s_i \) \Comment{Average score across folds}
+        \State \textbf{Return} \( S_{\text{avg}} \)
+        \end{algorithmic}
+        \end{algorithm}
+    \item In practice this helps reduce overfitting and helps us get a better estimate of the performance of the model.
+    \item For time series data, we can use \textbf{rolling cross validation} where we use a window of the data to fit the model and then use the next 
+    observation as a validation set.
+\end{enumerate}
+
+\subsection{Grid Search}
+\begin{enumerate}
+    \item \textbf{Grid Search} is a technique used to find the optimal hyperparameters for a model.
+    \item The basic idea is to search over a grid of hyperparameters and select the one that minimizes the error of the model.
+    \item Formally,
+    \begin{algorithm}
+        \caption{Grid Search for Hyperparameter Tuning}
+        \begin{algorithmic}[1] % Line numbers
+        \State \textbf{Input:} \( D_{\text{train}} \), \( D_{\text{val}} \), \( M \), hyperparameter sets \( P_1, P_2, \dots, P_k \),  \( \text{Score Function} \)
+        \State \textbf{Output:} Best hyperparameters \( P_{\text{best}} \), best score \( S_{\text{best}} \)
+        \State Initialize \( S_{\text{best}} \gets -\infty \) \Comment{Assuming higher score is better; adjust for minimization}
+        \State Initialize \( P_{\text{best}} \gets \emptyset \)
+        \State Generate all possible combinations \( C \) of hyperparameters from \( P_1 \times P_2 \times \dots \times P_k \) \Comment{Cartesian product}
+        \For{\( p \in C \)} \Comment{Iterate over each combination}
+            \State Train model \( M \) on \( D_{\text{train}} \) using hyperparameters \( p \)
+            \State Evaluate \( M \) on \( D_{\text{val}} \) to compute \( s = \text{Score}(M, D_{\text{val}}) \)
+            \If{\( s > S_{\text{best}} \)}
+                \State \( S_{\text{best}} \gets s \)
+                \State \( P_{\text{best}} \gets p \)
+            \EndIf
+        \EndFor
+        \State \textbf{Return} \( P_{\text{best}}, S_{\text{best}} \)
+        \end{algorithmic}
+        \end{algorithm}
+\end{enumerate}
+
+\subsection{}
 
 \section{Pandas}
 \subsection{DataFrames}
